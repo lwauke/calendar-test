@@ -1,8 +1,16 @@
-<script setup>
+<script>
+  import Calendar from '../components/Calendar/index.vue'
+
+  export default {
+    components: {
+      Calendar
+    }
+  }
 </script>
 
 <template>
   <main>
-    test
+    <h2>Home</h2>
+    <Calendar />
   </main>
 </template>
