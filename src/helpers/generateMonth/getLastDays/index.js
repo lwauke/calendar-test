@@ -5,7 +5,7 @@ const getLastDays = (year, month) => {
     { length: firstDay.getDay() },
     (_, i) => ({
       date: new Date(year, month, i * -1).getDate(),
-      actualMonth: false
+      relativeMonth: -1
     })
   );
 

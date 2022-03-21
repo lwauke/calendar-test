@@ -36,11 +36,11 @@
       :key="i"
     >
       <Date
-        v-for="{date, actualMonth } in getWeek(i)"
+        v-for="{ date, relativeMonth } in getWeek(i)"
         :key="date + month"
         :date="date"
-        :actualMonth="actualMonth"
-        :fullDate="`${year}-${month}-${date}`"
+        :actualMonth="month + relativeMonth"
+        :fullDate="`${year}-${month + relativeMonth}-${date}`"
       />
     </tr>
   </table>

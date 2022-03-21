@@ -1,9 +1,19 @@
 <script>
   import Modal from '../Modal/index.vue'
+  import AddReminder from '../AddReminder/index.vue'
+  import Reminder from '../Reminder/index.vue'
+
   export default {
     props: ['date', 'fullDate', 'actualMonth'],
     components: {
-      Modal
+      Modal,
+      AddReminder,
+      Reminder
+    },
+    computed: {
+      reminders: function () {
+        return this.$store.getters.getByDate(this.fullDate)
+      }
     },
     data () {
       return {
@@ -17,9 +27,23 @@
   <td :class="[{ actualMonth }, 'cell']">
     {{ date }}
     <button class="btn" @click="showModal = true">+</button>
-    <Modal v-if="showModal" @close="showModal = false">
+    <ul class="list">
+      <Reminder
+        v-for="reminder in reminders"
+        :key="reminder.uuid"
+        v-bind="reminder"
+        :fullDate="fullDate"
+      />
+    </ul>
+    <Modal
+      v-if="showModal"
+      @close="showModal = false"
+    >
       <template v-slot:header>
         add a reminder
+      </template>
+      <template v-slot:body>
+        <AddReminder :fullDate="fullDate" />
       </template>
     </Modal>
   </td>
@@ -41,5 +65,8 @@
   border: 0
   display: none 
   cursor: pointer
-</style>
 
+.list
+  padding: 0
+  margin: 0
+</style>
