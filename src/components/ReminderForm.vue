@@ -1,5 +1,7 @@
 <script>
   import InputAutoComplete from './AutoComplete.vue';
+  import getWeather from '../services/weather.js';
+  import getCountries from '../services/countries.js';
 
   export default {
     props: ['fullDate', 'edit', 'uuid'],
@@ -53,8 +55,12 @@
         this.country = obj.country
         this.cities = obj.cities
       },
-      setCity (city) {
-        this.city = city
+      async setCity (city) {
+        this.city = city;
+        const weather = await getWeather(city);
+
+        console.log(weather)
+
       }
     },
     async mounted () {
@@ -68,6 +74,7 @@
           city,
           country
         } = this.$store.getters.getByUUID({ date: this.fullDate, uuid: this.uuid });
+
         this.color = color
         this.start = start
         this.end = end
@@ -77,9 +84,7 @@
         this.country = country 
       }
 
-      const res = await fetch('https://countriesnow.space/api/v0.1/countries')
-      const json = await res.json()
-      this.countries = json.data;
+      this.countries = await getCountries();
     }
   }
 </script>
