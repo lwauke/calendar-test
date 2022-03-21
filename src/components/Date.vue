@@ -1,26 +1,26 @@
 <script>
-  import Modal from './Modal.vue'
-  import ReminderForm from './ReminderForm.vue'
-  import ReminderList from './ReminderList.vue'
+import Modal from "./Modal.vue";
+import ReminderForm from "./ReminderForm.vue";
+import ReminderList from "./ReminderList.vue";
 
-  export default {
-    props: ['date', 'fullDate', 'actualMonth'],
-    components: {
-      Modal,
-      ReminderForm,
-      ReminderList
+export default {
+  props: ["date", "fullDate", "actualMonth"],
+  components: {
+    Modal,
+    ReminderForm,
+    ReminderList,
+  },
+  computed: {
+    reminders: function () {
+      return this.$store.getters.getByDate(this.fullDate);
     },
-    computed: {
-      reminders: function () {
-        return this.$store.getters.getByDate(this.fullDate)
-      }
-    },
-    data () {
-      return {
-        showModal: false
-      }
-    }
-  }
+  },
+  data() {
+    return {
+      showModal: false,
+    };
+  },
+};
 </script>
 
 <template>
@@ -28,15 +28,10 @@
     {{ date }}
     <button class="btn" @click="showModal = true">+</button>
     <ul class="list">
-      <ReminderList :fullDate="fullDate"/>
+      <ReminderList :fullDate="fullDate" />
     </ul>
-    <Modal
-      v-if="showModal"
-      @close="showModal = false"
-    >
-      <template v-slot:header>
-        add a reminder
-      </template>
+    <Modal v-if="showModal" @close="showModal = false">
+      <template v-slot:header> add a reminder </template>
       <template v-slot:body>
         <ReminderForm :fullDate="fullDate" />
       </template>
@@ -58,6 +53,6 @@
 .btn
   background: none
   border: 0
-  display: none 
+  display: none
   cursor: pointer
 </style>

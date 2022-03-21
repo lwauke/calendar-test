@@ -1,28 +1,28 @@
 <script>
-  import debounce from 'lodash.debounce';
-  export default {
-    props: ['list', 'keySearch', 'keyList', 'initialFilter'],
-    data () {
-      return {
-        filter: '',
-        filteredList: []
-      }
+import debounce from "lodash.debounce";
+export default {
+  props: ["list", "keySearch", "keyList", "initialFilter"],
+  data() {
+    return {
+      filter: "",
+      filteredList: [],
+    };
+  },
+  watch: {
+    filter(input) {
+      debounce(() => {
+        this.filteredList = this.list.filter((item) =>
+          new RegExp(input, "ig").test(item[this.keySearch] || item)
+        );
+      }, 150)();
     },
-    watch: {
-      filter (input) {
-        debounce(() => {
-          this.filteredList = this.list.filter(
-            item => new RegExp(input, 'ig').test(item[this.keySearch] || item)
-          )
-        }, 150)()
-      }
-    },
-    mounted () {
-      this.$nextTick(() => {
-        this.filter = this.initialFilter
-      })
-    }
-  }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.filter = this.initialFilter;
+    });
+  },
+};
 </script>
 
 <template>
@@ -45,4 +45,3 @@
   padding: 0
   margin: 0
 </style>
-

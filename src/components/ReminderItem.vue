@@ -1,20 +1,17 @@
 <script>
-  export default {
-    props: ['uuid', 'color', 'start', 'end', 'reminder', 'fullDate'],
-    data () {
-      return {
-        showModal: false
-      }
+export default {
+  props: ["uuid", "color", "start", "end", "reminder", "fullDate"],
+  data() {
+    return {
+      showModal: false,
+    };
+  },
+  methods: {
+    deleteReminder: function () {
+      this.$store.commit("delete", { date: this.fullDate, uuid: this.uuid });
     },
-    methods: {
-      deleteReminder: function () {
-        this.$store.commit(
-          'delete',
-          { date: this.fullDate, uuid: this.uuid }
-        )
-      }
-    }
-  }
+  },
+};
 </script>
 
 <template>
@@ -31,8 +28,7 @@
 .red
   background: red
 .yellow
-  background: yellow 
+  background: yellow
 .green
   background: green
-
 </style>

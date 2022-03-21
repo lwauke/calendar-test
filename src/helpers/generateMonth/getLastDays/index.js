@@ -5,11 +5,11 @@ const getLastDays = (year, month) => {
     { length: firstDay.getDay() },
     (_, i) => ({
       date: new Date(year, month, i * -1).getDate(),
-      relativeMonth: -1
+      relativeMonth: -1,
     })
   );
 
   return lastDaysFromPreviousMonth.reverse();
-}
+};
 
 export default getLastDays;
