@@ -1,16 +1,19 @@
 import getLastDays from './getLastDays';
 
-const sequentialArray = length => Array.from({ length }, (_, i) => i)
+const sequentialDays = (length, { actualMonth }) => Array.from(
+  { length },
+  (_, i) => ({ date: 1 + i, actualMonth })
+)
 
 const generateMonth = (year, month) => {
   const lastDay = new Date(year, month + 1, 0);
 
   const days = [
     ...getLastDays(year, month),
-    ...sequentialArray(lastDay.getDate())
+    ...sequentialDays(lastDay.getDate(), { actualMonth: true })
   ]
 
-  const daysFromNextMonth = sequentialArray(7 - (days.length % 7))
+  const daysFromNextMonth = sequentialDays(7 - (days.length % 7), { actualMonth: false })
 
   return [
     ...days,
