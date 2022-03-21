@@ -1,9 +1,3 @@
-<script>
-  export default {
-    props: ['date', 'fullDate', 'actualMonth'],
-  }
-</script>
-
 <template>
   <transition name="modal">
     <div class="modal-mask">

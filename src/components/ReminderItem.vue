@@ -1,6 +1,4 @@
 <script>
-  import Modal from '../Modal/index.vue';
-  import AddReminder from '../AddReminder/index.vue';
   export default {
     props: ['uuid', 'color', 'start', 'end', 'reminder', 'fullDate'],
     data () {
@@ -20,12 +18,10 @@
 </script>
 
 <template>
-  <fragment>
-    <li :class="[color, 'reminder']">
-      {{ reminder }}
-      <button @click="deleteReminder">delete</button>
-    </li>
-  </fragment>
+  <li :class="[color, 'reminder']">
+    {{ reminder }}
+    <button @click.stop="deleteReminder">delete</button>
+  </li>
 </template>
 
 <style lang="sass" scoped>
@@ -40,4 +36,3 @@
   background: green
 
 </style>
-

@@ -1,14 +1,14 @@
 <script>
-  import Modal from '../Modal/index.vue'
-  import AddReminder from '../AddReminder/index.vue'
-  import Reminder from '../Reminder/index.vue'
+  import Modal from './Modal.vue'
+  import ReminderForm from './ReminderForm.vue'
+  import ReminderList from './ReminderList.vue'
 
   export default {
     props: ['date', 'fullDate', 'actualMonth'],
     components: {
       Modal,
-      AddReminder,
-      Reminder
+      ReminderForm,
+      ReminderList
     },
     computed: {
       reminders: function () {
@@ -28,12 +28,7 @@
     {{ date }}
     <button class="btn" @click="showModal = true">+</button>
     <ul class="list">
-      <Reminder
-        v-for="reminder in reminders"
-        :key="reminder.uuid"
-        v-bind="reminder"
-        :fullDate="fullDate"
-      />
+      <ReminderList :fullDate="fullDate"/>
     </ul>
     <Modal
       v-if="showModal"
@@ -43,7 +38,7 @@
         add a reminder
       </template>
       <template v-slot:body>
-        <AddReminder :fullDate="fullDate" />
+        <ReminderForm :fullDate="fullDate" />
       </template>
     </Modal>
   </td>
@@ -65,8 +60,4 @@
   border: 0
   display: none 
   cursor: pointer
-
-.list
-  padding: 0
-  margin: 0
 </style>

@@ -1,6 +1,6 @@
 <script>
-  import generateMonth from '../../helpers/generateMonth';
-  import DateComponent from '../Date/index.vue';
+  import generateMonth from '../helpers/generateMonth';
+  import DateComponent from './Date.vue';
 
   const now = new Date();
 
