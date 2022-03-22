@@ -21,7 +21,8 @@ export default {
       cities: [],
       weather: '',
       setTimeError: false,
-      success: false
+      success: false,
+      incompleteForm: true
     };
   },
   methods: {
@@ -40,11 +41,19 @@ export default {
         start: this.start,
         end: this.end,
         country: this.country,
-        city: this.city,
-        weather: this.weather,
+        city: this.city
       };
     },
+    missingFields() {
+      const missing = Object.values(this.getReminderInput())
+        .some(val => !val || val === '')
+      this.incompleteForm = missing
+      return missing
+    },
     addReminder() {
+      if (this.missingFields()) {
+        return
+      }
       this.$store.commit("add", {
         date: this.fullDate,
         reminder: this.getReminderInput(),
@@ -52,6 +61,9 @@ export default {
       this.success = true
     },
     editReminder() {
+      if (this.missingFields()) {
+        return
+      }
       this.$store.commit("edit", {
         date: this.fullDate,
         reminder: this.getReminderInput(),
@@ -136,7 +148,8 @@ export default {
     <label v-if="city" :aria-labelledby="`selected country is ${city}`">{{ city }}</label>
     <button @click.prevent="editReminder" v-if="edit">edit</button>
     <button @click.prevent="addReminder" v-else>add</button>
-    <span v-if="success">Done!</span>
+    <span v-if="incompleteForm">You need to complete the form :)</span>
+    <span v-else-if="success">Done!</span>
   </form>
 </template>
 
