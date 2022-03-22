@@ -1,0 +1,1 @@
+import{_ as e}from"./index.73bb9716.js";import{o,c as t,d as s}from"./vendor.3ac1e7da.js";const c={},n={class:"reusing-page"},a=s("h2",null,"another page to use the calendar component",-1),r=[a];function _(i,d){return o(),t("div",n,r)}var f=e(c,[["render",_]]);export{f as default};
