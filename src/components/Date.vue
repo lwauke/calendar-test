@@ -20,16 +20,22 @@ export default {
       showModal: false,
     };
   },
+  methods: {
+    deleteAll () {
+      this.$store.commit('deleteAll', { date: this.fullDate })
+    }
+  }
 };
 </script>
 
 <template>
   <td :class="[{ actualMonth }, 'cell']">
     {{ date }}
-    <button class="btn" @click="showModal = true">+</button>
-    <ul class="list">
-      <ReminderList :fullDate="fullDate" />
-    </ul>
+    <div>
+      <button class="btn" @click="showModal = true">+</button>
+      <button @click="deleteAll">delete all</button>
+    </div>
+    <ReminderList :fullDate="fullDate" class="list"/>
     <Modal v-if="showModal" @close="showModal = false">
       <template v-slot:header> add a reminder </template>
       <template v-slot:body>
@@ -41,18 +47,27 @@ export default {
 
 <style lang="sass" scoped>
 .cell
-  width: 100px
-  height: 100px
+  width: 14%
+  height: 150px
   display: inline-grid
   grid-template-columns: 1fr auto
   grid-template-rows: auto 1fr
-  &:hover, &:focus, &:focus-within
-    & .btn
-      display: block
+  border-left: 1px solid #000
+  border-top: 1px solid #000
+  padding: 5px
+  &:last-child
+    border-right: 1px solid #000
+  flex-grow: 1
+  // &:hover, &:focus, &:focus-within
+  //   & .btn
+  //     display: block
 
 .btn
   background: none
   border: 0
-  display: none
+  // display: none
   cursor: pointer
+
+.list
+  grid-column: 1 / 3
 </style>

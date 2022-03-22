@@ -50,4 +50,5 @@ export default {
 .list
   padding: 0
   margin: 0
+  overflow: auto
 </style>

@@ -16,19 +16,37 @@ export default {
 
 <template>
   <li :class="[color, 'reminder']">
-    {{ reminder }}
-    <button @click.stop="deleteReminder">delete</button>
+    <span class="text">{{ reminder }}</span>
+    <button class="btn" @click.stop="deleteReminder">delete</button>
   </li>
 </template>
 
 <style lang="sass" scoped>
 .reminder
   color: #fff
-  background: gray
+  background: #a5a5a5
+  display: flex
+  justify-content: space-between
+  align-items: start
+  cursor: pointer
+  padding: 5px 10px
+  border-radius: 5px
+  margin-top: 5px
 .red
-  background: red
+  background: #ff5f5f
 .yellow
-  background: yellow
+  background: #c2c510
 .green
-  background: green
+  background: #11a111
+.btn
+  background: rgba(255,255,255, .8)
+  border: none
+  border-radius: 2px
+  cursor: pointer
+  &:hover
+    background: #fff
+.text
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
 </style>

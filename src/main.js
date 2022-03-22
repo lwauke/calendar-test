@@ -15,6 +15,9 @@ const store = createStore({
     delete(state, { date, uuid }) {
       state[date] = state[date].filter((reminder) => reminder.uuid !== uuid);
     },
+    deleteAll(state, { date }) {
+      state[date] = [];
+    },
     edit(state, { date, reminder, uuid }) {
       state[date] = [
         ...state[date].filter((reminder) => reminder.uuid !== uuid),
