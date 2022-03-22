@@ -6,11 +6,13 @@ export default {
     return {
       filter: "",
       filteredList: [],
+      show: false
     };
   },
   watch: {
     filter(input) {
       debounce(() => {
+        this.show = true
         this.filteredList = this.list.filter((item) =>
           new RegExp(input, "ig").test(item[this.keySearch] || item)
         );
@@ -26,13 +28,14 @@ export default {
 </script>
 
 <template>
-  <div>
-    <input type="text" v-model="filter" />
-    <ul v-if="filter && filteredList.length">
+  <div class="container">
+    <input type="text" v-model="filter" class="filter"/>
+    <ul v-if="show && filter && filteredList.length" class="autocomplete">
       <li
+        class="item"
         v-for="item in new Set(filteredList)"
         :key="item[keyList] || item"
-        @click="$emit('selectItem', item)"
+        @click="$emit('selectItem', item); show = false"
       >
         {{ item[keySearch] || item }}
       </li>
@@ -41,7 +44,26 @@ export default {
 </template>
 
 <style lang="sass" scoped>
-.list
+.autocomplete
+  list-style: none
   padding: 0
+  position: absolute
+  top: 100%
   margin: 0
+  z-index: 1
+  max-height: 100px
+  overflow: auto
+  background: #fff
+  box-shadow: 0px 0px 5px 5px rgb(0 0 0 / 20%)
+.filter, .autocomplete
+  width: 100%
+.filter
+  box-sizing: border-box
+.item
+  padding: 5px
+  cursor: pointer
+  &::hover
+    background: #e7e7e7
+.container
+  position: relative
 </style>

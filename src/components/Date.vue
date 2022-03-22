@@ -29,11 +29,11 @@ export default {
 </script>
 
 <template>
-  <td :class="[{ actualMonth }, 'cell']">
-    {{ date }}
-    <div>
+  <td class="cell">
+    <span :class="[{ actualMonth }, 'date']">{{ date }}</span>
+    <div class="container-btns">
       <button class="btn" @click="showModal = true">+</button>
-      <button @click="deleteAll">delete all</button>
+      <button class="btn" @click="deleteAll">delete all</button>
     </div>
     <ReminderList :fullDate="fullDate" class="list"/>
     <Modal v-if="showModal" @close="showModal = false">
@@ -58,16 +58,25 @@ export default {
   &:last-child
     border-right: 1px solid #000
   flex-grow: 1
-  // &:hover, &:focus, &:focus-within
-  //   & .btn
-  //     display: block
+  &:last-child, &:first-child
+    .date
+      color: #6ea2c9
 
 .btn
   background: none
   border: 0
-  // display: none
   cursor: pointer
+  &:hover
+    background: rgba(0,0,0,.1)
 
 .list
   grid-column: 1 / 3
+
+.date
+  color: #363636
+  font-weight: 600
+.cell .date:not(.actualMonth)
+  color: rgba(0,0,0,.3)
+.container-btns
+  text-align: right
 </style>

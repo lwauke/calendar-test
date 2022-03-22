@@ -27,7 +27,7 @@ const store = createStore({
   },
   getters: {
     getByDate: (state) => (date) => {
-      return state[date];
+      return state[date]?.sort((a, b) => a.start - b.start);
     },
     getByUUID:
       (state) =>

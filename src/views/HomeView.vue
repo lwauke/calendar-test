@@ -10,7 +10,7 @@ export default {
 
 <template>
   <main>
-    <h2>Home</h2>
+    <h2 class="title">Home</h2>
     <Calendar />
   </main>
 </template>

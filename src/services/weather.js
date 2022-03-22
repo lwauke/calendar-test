@@ -19,13 +19,15 @@ const weatherCodes = {
   15: "Drizzle",
   16: "Sandstorm",
 };
-const getWeather = async (city) => {
+const getWeather = async (city, date, time) => {
   const latLongResponse = await fetch(
     `https://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=e04040e27f92e36db440fe9a03d4be1e`
   );
   const coordinates = await latLongResponse.json();
 
   const [{ lat, lon }] = coordinates;
+
+  console.log(date, time)
 
   const weatherRes = await fetch(
     `https://api.meteomatics.com/2022-03-21T00:00:00Z/weather_symbol_1h:idx/${lat},${lon}/json`,

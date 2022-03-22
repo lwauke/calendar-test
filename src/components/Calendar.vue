@@ -62,7 +62,7 @@ export default {
           v-for="{ date, relativeMonth } in getWeek(i)"
           :key="date + month"
           :date="date"
-          :actualMonth="month + relativeMonth"
+          :actualMonth="relativeMonth === 0"
           :fullDate="`${year}-${month + relativeMonth}-${date}`"
         />
       </tr>

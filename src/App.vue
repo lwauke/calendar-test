@@ -3,8 +3,13 @@ import { RouterView } from "vue-router";
 </script>
 
 <template>
-  <div>
-    <h1>calendar</h1>
+  <div class="app">
     <RouterView />
   </div>
 </template>
+
+<style lang="sass">
+.app
+  font-family: 'Roboto', sans-serif
+
+</style>
