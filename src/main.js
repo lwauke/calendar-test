@@ -3,6 +3,7 @@ import { createStore } from "vuex";
 import App from "./App.vue";
 import router from "./router";
 import { v4 as uuidv4 } from "uuid";
+import getWeather from "./services/weather";
 
 const store = createStore({
   state() {
@@ -23,6 +24,16 @@ const store = createStore({
         ...state[date].filter((reminder) => reminder.uuid !== uuid),
         { ...reminder, uuid },
       ];
+    },
+  },
+  actions: {
+    async addReminder({ commit }, { date, reminder }) {
+      try {
+        const weather = await getWeather(reminder.city, date, reminder.start);
+        await commit("add", { date, reminder: { ...reminder, weather } });
+      } catch (error) {
+        commit("add", { date, reminder });
+      }
     },
   },
   getters: {

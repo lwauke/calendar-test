@@ -21,10 +21,10 @@ export default {
     };
   },
   methods: {
-    deleteAll () {
-      this.$store.commit('deleteAll', { date: this.fullDate })
-    }
-  }
+    deleteAll() {
+      this.$store.commit("deleteAll", { date: this.fullDate });
+    },
+  },
 };
 </script>
 
@@ -35,7 +35,7 @@ export default {
       <button class="btn" @click="showModal = true">+</button>
       <button class="btn" @click="deleteAll">delete all</button>
     </div>
-    <ReminderList :fullDate="fullDate" class="list"/>
+    <ReminderList :fullDate="fullDate" class="list" />
     <Modal v-if="showModal" @close="showModal = false">
       <template v-slot:header> add a reminder </template>
       <template v-slot:body>

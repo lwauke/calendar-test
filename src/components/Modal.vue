@@ -1,6 +1,6 @@
 <template>
   <transition name="modal">
-    <div class="modal-mask">
+    <div class="modal-mask" @keyup.esc="$emit('close')">
       <div class="modal-wrapper">
         <div class="modal-container">
           <div class="modal-header">
@@ -36,7 +36,6 @@
   height: 100%
   background-color: rgba(0, 0, 0, 0.5)
   display: table
-  transition: opacity 0.3s ease
 
 .modal-wrapper
   display: table-cell

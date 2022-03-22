@@ -20,27 +20,31 @@ const weatherCodes = {
   16: "Sandstorm",
 };
 
-const millisecondsToTime = ms => {
-  const m = `${(ms / 60 / 1000) % 60}`.padStart(2, 0);
-  const h = `${Math.round(ms / 3600 / 1000)}`.padStart(2, 0);
+const formatDate = (date, hoursInMs) => {
+  const h = Math.round(hoursInMs / 3600 / 1000);
+  const m = (hoursInMs / 60 / 1000) % 60;
+  console.log(date, hoursInMs, h, m);
+  const timestamp = new Date(date).setHours(h, m);
 
-  return `${h}:${m}:00`;
-}
-
-const formatDate = date => date
-  .replace(/\-(\d)(\D)/, '-0$1$2')
-  .replace(/\-(\d)$/g, '-0$1')
+  return new Date(timestamp).toISOString();
+};
 
 const getWeather = async (city, date, time) => {
   const latLongResponse = await fetch(
     `https://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=e04040e27f92e36db440fe9a03d4be1e`
   );
+
   const coordinates = await latLongResponse.json();
 
   const [{ lat, lon }] = coordinates;
 
+  // return Promise.resolve(weatherCodes[1]);
+
   const weatherRes = await fetch(
-    `https://api.meteomatics.com/${formatDate(date)}T${millisecondsToTime(time)}Z/weather_symbol_1h:idx/${lat},${lon}/json`,
+    `https://api.meteomatics.com/${formatDate(
+      date,
+      time
+    )}/weather_symbol_1h:idx/${lat},${lon}/json`,
     {
       headers: new Headers({
         Authorization:

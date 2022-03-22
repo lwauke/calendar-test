@@ -1,7 +1,7 @@
 <script>
 import InputAutoComplete from "./AutoComplete.vue";
-import getWeather from "../services/weather.js";
 import getCountries from "../services/countries.js";
+import msToHours from "../helpers/msToHours.js";
 
 export default {
   props: ["fullDate", "edit", "uuid"],
@@ -19,57 +19,59 @@ export default {
       city: "",
       countries: [],
       cities: [],
-      weather: '',
+      weather: "",
       setTimeError: false,
       success: false,
-      incompleteForm: true
+      errorOnDispatch: false,
+      incompleteForm: true,
     };
   },
   methods: {
-    handleTimeEnd(e) {
-      const time = e.target.valueAsNumber
-      if (time < this.start) {
-        this.setTimeError = true
-        return
-      }
-      this.end = time
+    hoursToMs(formatedTime) {
+      const [hours, minutes] = formatedTime.split(/\D/);
+      return Date.UTC(70, 0, 1, hours, minutes);
     },
     getReminderInput() {
       return {
         color: this.color,
         reminder: this.reminder,
-        start: this.start,
-        end: this.end,
+        start: this.hoursToMs(this.start),
+        end: this.hoursToMs(this.end),
         country: this.country,
-        city: this.city
+        city: this.city,
       };
     },
     missingFields() {
-      const missing = Object.values(this.getReminderInput())
-        .some(val => !val || val === '')
-      this.incompleteForm = missing
-      return missing
+      const missing = Object.values(this.getReminderInput()).some(
+        (val) => !val || val === ""
+      );
+      this.incompleteForm = missing;
+      return missing;
     },
-    addReminder() {
+    async addReminder() {
       if (this.missingFields()) {
-        return
+        return;
       }
-      this.$store.commit("add", {
-        date: this.fullDate,
-        reminder: this.getReminderInput(),
-      });
-      this.success = true
+      try {
+        await this.$store.dispatch("addReminder", {
+          date: this.fullDate,
+          reminder: this.getReminderInput(),
+        });
+        this.success = true;
+      } catch {
+        this.errorOnDispatch = true;
+      }
     },
     editReminder() {
       if (this.missingFields()) {
-        return
+        return;
       }
       this.$store.commit("edit", {
         date: this.fullDate,
         reminder: this.getReminderInput(),
         uuid: this.uuid,
       });
-      this.success = true
+      this.success = true;
     },
     setCountry(obj) {
       this.country = obj.country;
@@ -77,7 +79,10 @@ export default {
     },
     async setCity(city) {
       this.city = city;
-      this.weather = await getWeather(city, this.fullDate, this.start);
+    },
+    formatHour(time) {
+      const { hours, minutes } = msToHours(time);
+      return `${hours}`.padStart(2, 0) + ":" + `${minutes}`.padStart(2, 0);
     },
   },
   async mounted() {
@@ -86,14 +91,20 @@ export default {
         this.$store.getters.getByUUID({ date: this.fullDate, uuid: this.uuid });
 
       this.color = color;
-      this.start = start;
-      this.end = end;
+      this.start = this.formatHour(start);
+      this.end = this.formatHour(end);
       this.activeUUID = uuid;
       this.reminder = reminder;
       this.city = city;
       this.country = country;
     }
-
+    this.$watch("country", () => (this.city = ""));
+    this.$watch(
+      () => this.end < this.start,
+      () => {
+        this.setTimeError = true;
+      }
+    );
     this.countries = await getCountries();
   },
 };
@@ -114,20 +125,14 @@ export default {
       <option>yellow</option>
       <option>red</option>
     </select>
-    <label
-      for="start"
-      aria-labelledby="time which the reminder will begin"
-    >
+    <label for="start" aria-labelledby="time which the reminder will begin">
       Start
     </label>
-    <input type="time" id="start" name="start" @change="start = $event.target.valueAsNumber"/>
-    <label
-      for="end"
-      aria-labelledby="time which the reminder will finish"
-    >
+    <input type="time" id="start" name="start" v-model="start" />
+    <label for="end" aria-labelledby="time which the reminder will finish">
       End
-    </label >
-    <input type="time" id="end" name="end" @change="handleTimeEnd"/>
+    </label>
+    <input type="time" id="end" name="end" v-model="end" />
     <label v-if="setTimeError">Select a time after the start</label>
     <label>Search and select a country:</label>
     <InputAutoComplete
@@ -137,7 +142,9 @@ export default {
       v-on:selectItem="setCountry($event)"
       :initialFilter="country"
     />
-    <label v-if="country" :aria-labelledby="`selected country is ${country}`">{{ country }}</label>
+    <label v-if="country" :aria-labelledby="`selected country is ${country}`">{{
+      country
+    }}</label>
     <label>Search and select a city:</label>
     <InputAutoComplete
       :list="cities"
@@ -145,11 +152,15 @@ export default {
       :disabled="!country"
       :initialFilter="city"
     />
-    <label v-if="city" :aria-labelledby="`selected country is ${city}`">{{ city }}</label>
+    <label v-if="city" :aria-labelledby="`selected country is ${city}`">{{
+      city
+    }}</label>
     <button @click.prevent="editReminder" v-if="edit">edit</button>
     <button @click.prevent="addReminder" v-else>add</button>
     <span v-if="incompleteForm">You need to complete the form :)</span>
     <span v-else-if="success">Done!</span>
+    <span v-else-if="errorOnDispatch">Error while sending request :(</span>
+    <span v-else>Loading</span>
   </form>
 </template>
 

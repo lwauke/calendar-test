@@ -1,6 +1,7 @@
 <script>
 import Modal from "./Modal.vue";
 import ReminderForm from "./ReminderForm.vue";
+import ReminderView from "./ReminderView.vue";
 import ReminderItem from "./ReminderItem.vue";
 
 export default {
@@ -9,11 +10,13 @@ export default {
     ReminderItem,
     Modal,
     ReminderForm,
+    ReminderView,
   },
   data() {
     return {
       showModal: false,
       activeUUID: "",
+      editMode: false,
     };
   },
   computed: {
@@ -26,9 +29,30 @@ export default {
 
 <template>
   <div>
-    <Modal v-if="showModal" @close="showModal = false">
+    <Modal
+      v-if="showModal"
+      @close="
+        showModal = false;
+        editMode = false;
+      "
+    >
+      <template v-slot:header>
+        Reminder
+        <button v-if="!editMode" @click="editMode = true">edit</button>
+      </template>
       <template v-slot:body>
-        <ReminderForm :edit="true" :uuid="activeUUID" :fullDate="fullDate" />
+        <ReminderForm
+          v-if="editMode"
+          :edit="true"
+          :uuid="activeUUID"
+          :fullDate="fullDate"
+        />
+        <ReminderView
+          v-else
+          :edit="true"
+          :uuid="activeUUID"
+          :fullDate="fullDate"
+        />
       </template>
     </Modal>
     <ul class="list">

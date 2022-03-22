@@ -17,23 +17,23 @@ export default {
     };
   },
   mounted() {
-    this.getDaysFromDate()
+    this.getDaysFromDate();
   },
   computed: {
     headers: function () {
       return [
-        'Sunday',
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday'
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
       ];
-    }
+    },
   },
   methods: {
-    getDaysFromDate () {
+    getDaysFromDate() {
       this.days = generateMonth(this.year, this.month);
     },
     getWeek(n) {
@@ -41,18 +41,18 @@ export default {
       return this.days.slice(index, index + 7);
     },
     handleDate(e) {
-      const selectedDate = new Date(e.target.value)
-      this.month = selectedDate.getMonth()
-      this.year = selectedDate.getFullYear()
-      this.getDaysFromDate()
-    }
+      const selectedDate = new Date(e.target.value);
+      this.month = selectedDate.getMonth();
+      this.year = selectedDate.getFullYear();
+      this.getDaysFromDate();
+    },
   },
 };
 </script>
 
 <template>
   <div>
-    <input type="date" @change="handleDate" step="30">
+    <input type="date" @change="handleDate" step="30" />
     <table class="calendar">
       <thead class="header-row">
         <th v-for="day in headers" :key="day" class="header">{{ day }}</th>
@@ -63,7 +63,7 @@ export default {
           :key="date + month"
           :date="date"
           :actualMonth="relativeMonth === 0"
-          :fullDate="`${year}-${month + relativeMonth}-${date}`"
+          :fullDate="`${year}-${month + relativeMonth + 1}-${date}`"
         />
       </tr>
     </table>

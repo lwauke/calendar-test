@@ -11,5 +11,4 @@ import { RouterView } from "vue-router";
 <style lang="sass">
 .app
   font-family: 'Roboto', sans-serif
-
 </style>

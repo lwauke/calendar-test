@@ -6,13 +6,13 @@ export default {
     return {
       filter: "",
       filteredList: [],
-      show: false
+      show: false,
     };
   },
   watch: {
     filter(input) {
       debounce(() => {
-        this.show = true
+        this.show = true;
         this.filteredList = this.list.filter((item) =>
           new RegExp(input, "ig").test(item[this.keySearch] || item)
         );
@@ -29,13 +29,16 @@ export default {
 
 <template>
   <div class="container">
-    <input type="text" v-model="filter" class="filter"/>
+    <input type="text" v-model="filter" class="filter" />
     <ul v-if="show && filter && filteredList.length" class="autocomplete">
       <li
         class="item"
         v-for="item in new Set(filteredList)"
         :key="item[keyList] || item"
-        @click="$emit('selectItem', item); show = false"
+        @click="
+          $emit('selectItem', item);
+          show = false;
+        "
       >
         {{ item[keySearch] || item }}
       </li>
