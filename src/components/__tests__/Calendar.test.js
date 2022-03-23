@@ -20,6 +20,7 @@ describe("Calendar", () => {
     new Promise((res) => {
       setTimeout(async () => {
         const item = await findByTestId(selector);
+        console.log("chegou");
         await item.trigger("click");
         res(item);
       }, wait);
@@ -75,7 +76,7 @@ describe("Calendar", () => {
     findByTestId("city-input").setValue("rio");
     await clickOnDebouncedItem("city-item-rio-de-janeiro", 250);
 
-    await findByTestId("add-reminder").trigger("click");
+    await findByTestId("push-reminder").trigger("click");
     await findByTestId("close-modal").trigger("click");
 
     const reminderItem = await findByTestId(`reminder-item-${dateToTest}`);

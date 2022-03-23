@@ -23,7 +23,6 @@ const weatherCodes = {
 const formatDate = (date, hoursInMs) => {
   const h = Math.round(hoursInMs / 3600 / 1000);
   const m = (hoursInMs / 60 / 1000) % 60;
-  console.log(date, hoursInMs, h, m);
   const timestamp = new Date(date).setHours(h, m);
 
   return new Date(timestamp).toISOString();

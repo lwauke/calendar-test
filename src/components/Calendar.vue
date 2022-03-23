@@ -55,8 +55,11 @@ export default {
   <div>
     <input type="month" @change="handleDate" class="input-month" />
     <table class="calendar">
-      <thead class="header-row">
+      <thead class="header-row desk">
         <th v-for="day in headers" :key="day" class="header">{{ day }}</th>
+      </thead>
+      <thead class="header-row mobile">
+        <th v-for="day in headers" :key="day" class="header">{{ day[0] }}</th>
       </thead>
       <tr v-for="i in Math.ceil(days.length / 7)" :key="i" class="row">
         <Date
@@ -78,8 +81,6 @@ export default {
   display: block
   margin: 5px auto
   padding: 8px 15px
-.row
-  display: flex
 .row:last-child
   position: relative
   &::after
@@ -89,11 +90,22 @@ export default {
     bottom: 0
     height: 1px
     background: #000
+.header-row, .row
+  display: grid
+  grid-template-columns: repeat(7, 1fr)
 .header-row
-  display: flex
   background: #6ea2c9
   color: #fff
 .header
   padding: 5px
-  flex-grow: 1
+
+.mobile
+  display: grid
+  @media (min-width: 535px)
+    display: none
+
+.desk
+  display: none
+  @media (min-width: 535px)
+    display: grid
 </style>

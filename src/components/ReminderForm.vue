@@ -10,34 +10,34 @@ export default {
   },
   data() {
     return {
-      color: "",
-      reminder: "",
-      start: "",
-      end: "",
+      reminder: {
+        color: "",
+        reminder: "",
+        start: "",
+        end: "",
+        country: "",
+        city: "",
+      },
       activeUUID: "",
-      country: "",
-      city: "",
       countries: [],
       cities: [],
       setTimeError: false,
       success: false,
       errorOnDispatch: false,
       incompleteForm: true,
+      validate: false,
     };
   },
   methods: {
     hoursToMs(formatedTime) {
-      const [hours, minutes] = formatedTime.split(/\D/);
+      const [hours, minutes] = formatedTime.split(":");
       return Date.UTC(70, 0, 1, hours, minutes);
     },
     getReminderInput() {
       return {
-        color: this.color,
-        reminder: this.reminder,
-        start: this.hoursToMs(this.start),
-        end: this.hoursToMs(this.end),
-        country: this.country,
-        city: this.city,
+        ...this.reminder,
+        start: this.hoursToMs(this.reminder.start),
+        end: this.hoursToMs(this.reminder.end),
       };
     },
     missingFields() {
@@ -47,67 +47,55 @@ export default {
       this.incompleteForm = missing;
       return missing;
     },
-    async addReminder() {
-      console.log("chegou no dispatch", this.missingFields());
+    async pushReminder() {
+      this.validate = true;
       if (this.missingFields()) {
         return;
       }
       try {
-        await this.$store.dispatch("addReminder", {
+        await this.$store.dispatch("pushReminder", {
           date: this.fullDate,
           reminder: this.getReminderInput(),
+          type: this.edit ? "edit" : "add",
+          uuid: this.uuid,
         });
         this.success = true;
       } catch {
         this.errorOnDispatch = true;
       }
     },
-    editReminder() {
-      if (this.missingFields()) {
-        return;
-      }
-      this.$store.commit("edit", {
-        date: this.fullDate,
-        reminder: this.getReminderInput(),
-        uuid: this.uuid,
-      });
-      this.success = true;
-    },
-    setCountry(obj) {
-      this.country = obj.country;
-      this.cities = obj.cities;
-    },
-    async setCity(city) {
-      this.city = city;
-    },
-    formatHour(time) {
-      const { hours, minutes } = msToHours(time);
-      return `${hours}`.padStart(2, 0) + ":" + `${minutes}`.padStart(2, 0);
+  },
+  watch: {
+    reminder: {
+      handler() {
+        this.validate = false;
+      },
+      deep: true,
     },
   },
-  async mounted() {
+  mounted() {
+    getCountries().then((countries) => (this.countries = countries));
+
     if (this.edit) {
-      const { color, start, end, uuid, reminder, city, country } =
+      const { start, end, uuid, ...reminderProps } =
         this.$store.getters.getByUUID({ date: this.fullDate, uuid: this.uuid });
 
-      this.color = color;
-      this.start = this.formatHour(start);
-      this.end = this.formatHour(end);
+      this.reminder = reminderProps;
+      this.reminder.start = msToHours(start);
+      this.reminder.end = msToHours(end);
       this.activeUUID = uuid;
-      this.reminder = reminder;
-      this.city = city;
-      this.country = country;
     }
+
     this.$watch("country", () => {
-      this.city = "";
+      this.reminder.city = "";
     });
+
     this.$watch(
-      (vm) => [vm.end, vm.start],
+      (vm) => [vm.reminder.end, vm.reminder.start],
       () => {
-        this.setTimeError = this.end < this.start;
+        this.setTimeError = this.reminder.end < this.reminder.start;
       }
     );
-    this.countries = await getCountries();
   },
 };
 </script>
@@ -122,12 +110,17 @@ export default {
     </label>
     <textarea
       maxlength="30"
-      v-model="reminder"
+      v-model="reminder.reminder"
       id="reminder"
       data-test-id="reminder-input"
     />
     <label for="color">Choose a color</label>
-    <select name="color" id="color" v-model="color" data-test-id="color-input">
+    <select
+      name="color"
+      id="color"
+      v-model="reminder.color"
+      data-test-id="color-input"
+    >
       <option>green</option>
       <option>yellow</option>
       <option>red</option>
@@ -139,7 +132,7 @@ export default {
       type="time"
       id="start"
       name="start"
-      v-model="start"
+      v-model="reminder.start"
       data-test-id="start-input"
     />
     <label for="end" aria-labelledby="time which the reminder will finish">
@@ -149,7 +142,7 @@ export default {
       type="time"
       id="end"
       name="end"
-      v-model="end"
+      v-model="reminder.end"
       data-test-id="end-input"
     />
     <label v-if="setTimeError">Select a time greater than start</label>
@@ -158,34 +151,41 @@ export default {
       :list="countries"
       :keySearch="'country'"
       :keyList="'iso3'"
-      v-on:selectItem="setCountry($event)"
-      :initialFilter="country"
+      v-on:selectItem="
+        reminder.country = $event.country;
+        cities = $event.cities;
+      "
+      :initialFilter="reminder.country"
       :dataTestIdInput="'country-input'"
       :dataTestIdItem="'country-item'"
     />
-    <label v-if="country" :aria-labelledby="`selected country is ${country}`">{{
-      country
-    }}</label>
+    <label
+      v-if="reminder.country"
+      :aria-labelledby="`selected country is ${reminder.country}`"
+      >{{ reminder.country }}</label
+    >
     <label>Search and select a city:</label>
     <InputAutoComplete
       :list="cities"
-      v-on:selectItem="setCity($event)"
-      :disabled="!country"
-      :initialFilter="city"
+      v-on:selectItem="reminder.city = $event"
+      :initialFilter="reminder.city"
       :dataTestIdInput="'city-input'"
       :dataTestIdItem="'city-item'"
     />
-    <label v-if="city" :aria-labelledby="`selected country is ${city}`">{{
-      city
-    }}</label>
-    <button @click.prevent="editReminder" v-if="edit">edit</button>
-    <button @click.prevent="addReminder" data-test-id="add-reminder" v-else>
-      add
+    <label
+      v-if="reminder.city"
+      :aria-labelledby="`selected country is ${reminder.city}`"
+      >{{ reminder.city }}</label
+    >
+    <button @click.prevent="() => pushReminder()" data-test-id="push-reminder">
+      {{ edit ? "edit" : "add" }}
     </button>
-    <span v-if="incompleteForm">You need to complete the form :)</span>
-    <span v-else-if="success">Done!</span>
-    <span v-else-if="errorOnDispatch">Error while sending request :(</span>
-    <span v-else>Loading</span>
+    <div v-if="validate">
+      <span v-if="incompleteForm">You need to complete the form :)</span>
+      <span v-else-if="success">Done!</span>
+      <span v-else-if="errorOnDispatch">Error while sending request :(</span>
+      <span v-else>Loading</span>
+    </div>
   </form>
 </template>
 

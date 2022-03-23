@@ -38,6 +38,7 @@ export default {
   <div class="container">
     <input
       type="text"
+      @keyup.stop.esc="show = false"
       v-model="filter"
       class="filter"
       :data-test-id="`${dataTestIdInput}`"
@@ -46,6 +47,8 @@ export default {
       <li
         class="item"
         v-for="item in new Set(filteredList)"
+        tabindex="0"
+        @keyup.stop.esc="show = false"
         :data-test-id="`${dataTestIdItem}-${(item[keySearch] || item)
           .replace(/\s/g, '-')
           .toLowerCase()}`"

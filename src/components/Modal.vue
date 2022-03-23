@@ -1,7 +1,7 @@
 <template>
   <transition name="modal">
     <div class="modal-mask" @keyup.esc="$emit('close')">
-      <div class="modal-wrapper" @click="$emit('close')">
+      <div class="modal-wrapper">
         <div class="modal-container" @click.stop>
           <div class="modal-header">
             <h3>
@@ -54,6 +54,9 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33)
   transition: all 0.3s ease
   font-family: Helvetica, Arial, sans-serif
+  @media (max-width: 500px)
+    width: 80%
+    padding: 20px
 
 .modal-header h3
   margin-top: 0

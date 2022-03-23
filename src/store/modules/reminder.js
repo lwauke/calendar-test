@@ -22,12 +22,12 @@ const mutations = {
   },
 };
 const actions = {
-  async addReminder({ commit }, { date, reminder }) {
+  async pushReminder({ commit }, { date, reminder, uuid, type }) {
     try {
       const weather = await getWeather(reminder.city, date, reminder.start);
-      await commit("add", { date, reminder: { ...reminder, weather } });
+      await commit(type, { date, reminder: { ...reminder, weather }, uuid });
     } catch (error) {
-      commit("add", { date, reminder });
+      commit(type, { date, reminder, uuid });
     }
   },
 };

@@ -1,5 +1,6 @@
 <script>
 import msToHours from "../helpers/msToHours.js";
+
 export default {
   props: ["uuid", "fullDate"],
   data() {
@@ -16,10 +17,7 @@ export default {
     },
   },
   methods: {
-    formatHours(time) {
-      const { hours, minutes } = msToHours(time);
-      return `${hours}`.padStart(2, 0) + ":" + `${minutes}`.padStart(2, 0);
-    },
+    msToHours,
   },
 };
 </script>
@@ -30,8 +28,8 @@ export default {
     <h5>Time</h5>
     <p>
       {{ fullDate }}
-      from {{ formatHours(reminderData.start) }} to
-      {{ formatHours(reminderData.end) }}
+      from {{ msToHours(reminderData.start) }} to
+      {{ msToHours(reminderData.end) }}
     </p>
     <h5>Weather</h5>
     <p>{{ reminderData.weather || "No data available" }}</p>
