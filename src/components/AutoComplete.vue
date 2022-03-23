@@ -31,6 +31,12 @@ export default {
       this.filter = this.initialFilter;
     });
   },
+  methods: {
+    selectItem(item) {
+      this.$emit("selectItem", item);
+      this.show = false;
+    },
+  },
 };
 </script>
 
@@ -48,15 +54,13 @@ export default {
         class="item"
         v-for="item in new Set(filteredList)"
         tabindex="0"
-        @keyup.stop.esc="show = false"
+        @keypress.stop.esc="show = false"
         :data-test-id="`${dataTestIdItem}-${(item[keySearch] || item)
           .replace(/\s/g, '-')
           .toLowerCase()}`"
         :key="item[keyList] || item"
-        @click="
-          $emit('selectItem', item);
-          show = false;
-        "
+        @keypress.enter="selectItem(item)"
+        @click="selectItem(item)"
       >
         {{ item[keySearch] || item }}
       </li>

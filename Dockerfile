@@ -1,6 +1,6 @@
 FROM node:alpine
 
-ENTRYPOINT ["npm", "run", "dev"]
+ENTRYPOINT ["npm", "run", "dev", "--", "--host"]
 
 ENV DEV /opt/dev
 
@@ -10,6 +10,6 @@ COPY package.json $DEV/
 
 RUN npm i
 
-COPY index.html .eslintrc.js vite.config.js $DEV/
+COPY index.html .eslintrc.cjs vite.config.js $DEV/
 
 COPY src $DEV/src

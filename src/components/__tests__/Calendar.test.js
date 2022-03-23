@@ -20,7 +20,6 @@ describe("Calendar", () => {
     new Promise((res) => {
       setTimeout(async () => {
         const item = await findByTestId(selector);
-        console.log("chegou");
         await item.trigger("click");
         res(item);
       }, wait);

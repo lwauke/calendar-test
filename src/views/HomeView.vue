@@ -9,8 +9,16 @@ export default {
 </script>
 
 <template>
-  <main>
+  <main class="main">
     <h2 class="title">Home</h2>
     <Calendar />
   </main>
 </template>
+
+<style lang="sass" scoped>
+.main
+  width: 80%
+  margin: 0 auto
+h2
+  text-align: center
+</style>
