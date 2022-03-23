@@ -1,8 +1,8 @@
 <template>
   <transition name="modal">
     <div class="modal-mask" @keyup.esc="$emit('close')">
-      <div class="modal-wrapper">
-        <div class="modal-container">
+      <div class="modal-wrapper" @click="$emit('close')">
+        <div class="modal-container" @click.stop>
           <div class="modal-header">
             <h3>
               <slot name="header"></slot>
@@ -15,7 +15,11 @@
 
           <div class="modal-footer">
             <slot name="footer">
-              <button class="modal-default-button" @click="$emit('close')">
+              <button
+                class="modal-default-button"
+                @click="$emit('close')"
+                data-test-id="close-modal"
+              >
                 close
               </button>
             </slot>
@@ -44,9 +48,9 @@
 .modal-container
   width: 300px
   margin: 0px auto
-  padding: 20px 30px
+  padding: 50px 75px
   background-color: #fff
-  border-radius: 2px
+  border-radius: 15px
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33)
   transition: all 0.3s ease
   font-family: Helvetica, Arial, sans-serif
@@ -54,7 +58,6 @@
 .modal-header h3
   margin-top: 0
   color: #42b983
-  text-transform: capitalize
 
 .modal-body
   margin: 20px 0

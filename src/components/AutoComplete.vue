@@ -1,7 +1,14 @@
 <script>
 import debounce from "lodash.debounce";
 export default {
-  props: ["list", "keySearch", "keyList", "initialFilter"],
+  props: [
+    "list",
+    "keySearch",
+    "keyList",
+    "initialFilter",
+    "dataTestIdInput",
+    "dataTestIdItem",
+  ],
   data() {
     return {
       filter: "",
@@ -29,11 +36,19 @@ export default {
 
 <template>
   <div class="container">
-    <input type="text" v-model="filter" class="filter" />
+    <input
+      type="text"
+      v-model="filter"
+      class="filter"
+      :data-test-id="`${dataTestIdInput}`"
+    />
     <ul v-if="show && filter && filteredList.length" class="autocomplete">
       <li
         class="item"
         v-for="item in new Set(filteredList)"
+        :data-test-id="`${dataTestIdItem}-${(item[keySearch] || item)
+          .replace(/\s/g, '-')
+          .toLowerCase()}`"
         :key="item[keyList] || item"
         @click="
           $emit('selectItem', item);

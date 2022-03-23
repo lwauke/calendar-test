@@ -16,7 +16,7 @@ export default {
       weeks: 0,
     };
   },
-  mounted() {
+  created() {
     this.getDaysFromDate();
   },
   computed: {
@@ -41,7 +41,8 @@ export default {
       return this.days.slice(index, index + 7);
     },
     handleDate(e) {
-      const selectedDate = new Date(e.target.value);
+      const fullDate = e.target.value + "-1";
+      const selectedDate = new Date(fullDate);
       this.month = selectedDate.getMonth();
       this.year = selectedDate.getFullYear();
       this.getDaysFromDate();
@@ -52,12 +53,12 @@ export default {
 
 <template>
   <div>
-    <input type="date" @change="handleDate" step="30" />
+    <input type="month" @change="handleDate" class="input-month" />
     <table class="calendar">
       <thead class="header-row">
         <th v-for="day in headers" :key="day" class="header">{{ day }}</th>
       </thead>
-      <tr v-for="i in days.length / 7" :key="i" class="row">
+      <tr v-for="i in Math.ceil(days.length / 7)" :key="i" class="row">
         <Date
           v-for="{ date, relativeMonth } in getWeek(i)"
           :key="date + month"
@@ -73,6 +74,10 @@ export default {
 <style lang="sass" scoped>
 .calendar
   display: block
+.input-month
+  display: block
+  margin: 5px auto
+  padding: 8px 15px
 .row
   display: flex
 .row:last-child

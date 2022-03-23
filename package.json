@@ -4,9 +4,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test": "vitest --environment jsdom",
+    "test": "vitest run --environment jsdom",
     "preview": "vite preview --port 5050",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "prepare": "husky install"
   },
   "lint-staged": {
     "pre-commit": "npm run lint"
@@ -31,6 +32,7 @@
     "jsdom": "^19.0.0",
     "sass": "^1.49.9",
     "vite": "^2.8.4",
-    "vitest": "^0.7.7"
+    "vitest": "^0.7.7",
+    "husky": "^7.0.0"
   }
 }

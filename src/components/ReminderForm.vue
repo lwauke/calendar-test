@@ -19,7 +19,6 @@ export default {
       city: "",
       countries: [],
       cities: [],
-      weather: "",
       setTimeError: false,
       success: false,
       errorOnDispatch: false,
@@ -49,6 +48,7 @@ export default {
       return missing;
     },
     async addReminder() {
+      console.log("chegou no dispatch", this.missingFields());
       if (this.missingFields()) {
         return;
       }
@@ -98,11 +98,13 @@ export default {
       this.city = city;
       this.country = country;
     }
-    this.$watch("country", () => (this.city = ""));
+    this.$watch("country", () => {
+      this.city = "";
+    });
     this.$watch(
-      () => this.end < this.start,
+      (vm) => [vm.end, vm.start],
       () => {
-        this.setTimeError = true;
+        this.setTimeError = this.end < this.start;
       }
     );
     this.countries = await getCountries();
@@ -118,9 +120,14 @@ export default {
     >
       Reminder:
     </label>
-    <textarea maxlength="30" v-model="reminder" id="reminder" />
+    <textarea
+      maxlength="30"
+      v-model="reminder"
+      id="reminder"
+      data-test-id="reminder-input"
+    />
     <label for="color">Choose a color</label>
-    <select name="color" id="color" v-model="color">
+    <select name="color" id="color" v-model="color" data-test-id="color-input">
       <option>green</option>
       <option>yellow</option>
       <option>red</option>
@@ -128,12 +135,24 @@ export default {
     <label for="start" aria-labelledby="time which the reminder will begin">
       Start
     </label>
-    <input type="time" id="start" name="start" v-model="start" />
+    <input
+      type="time"
+      id="start"
+      name="start"
+      v-model="start"
+      data-test-id="start-input"
+    />
     <label for="end" aria-labelledby="time which the reminder will finish">
       End
     </label>
-    <input type="time" id="end" name="end" v-model="end" />
-    <label v-if="setTimeError">Select a time after the start</label>
+    <input
+      type="time"
+      id="end"
+      name="end"
+      v-model="end"
+      data-test-id="end-input"
+    />
+    <label v-if="setTimeError">Select a time greater than start</label>
     <label>Search and select a country:</label>
     <InputAutoComplete
       :list="countries"
@@ -141,6 +160,8 @@ export default {
       :keyList="'iso3'"
       v-on:selectItem="setCountry($event)"
       :initialFilter="country"
+      :dataTestIdInput="'country-input'"
+      :dataTestIdItem="'country-item'"
     />
     <label v-if="country" :aria-labelledby="`selected country is ${country}`">{{
       country
@@ -151,12 +172,16 @@ export default {
       v-on:selectItem="setCity($event)"
       :disabled="!country"
       :initialFilter="city"
+      :dataTestIdInput="'city-input'"
+      :dataTestIdItem="'city-item'"
     />
     <label v-if="city" :aria-labelledby="`selected country is ${city}`">{{
       city
     }}</label>
     <button @click.prevent="editReminder" v-if="edit">edit</button>
-    <button @click.prevent="addReminder" v-else>add</button>
+    <button @click.prevent="addReminder" data-test-id="add-reminder" v-else>
+      add
+    </button>
     <span v-if="incompleteForm">You need to complete the form :)</span>
     <span v-else-if="success">Done!</span>
     <span v-else-if="errorOnDispatch">Error while sending request :(</span>

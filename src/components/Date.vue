@@ -10,11 +10,6 @@ export default {
     ReminderForm,
     ReminderList,
   },
-  computed: {
-    reminders: function () {
-      return this.$store.getters.getByDate(this.fullDate);
-    },
-  },
   data() {
     return {
       showModal: false,
@@ -32,12 +27,24 @@ export default {
   <td class="cell">
     <span :class="[{ actualMonth }, 'date']">{{ date }}</span>
     <div class="container-btns">
-      <button class="btn" @click="showModal = true">+</button>
-      <button class="btn" @click="deleteAll">delete all</button>
+      <button
+        class="btn"
+        @click="showModal = true"
+        :data-test-id="`btn-add-${fullDate}`"
+      >
+        +
+      </button>
+      <button
+        class="btn"
+        @click="deleteAll"
+        :data-test-id="`btn-remove-all-${fullDate}`"
+      >
+        delete all
+      </button>
     </div>
     <ReminderList :fullDate="fullDate" class="list" />
     <Modal v-if="showModal" @close="showModal = false">
-      <template v-slot:header> add a reminder </template>
+      <template v-slot:header>Add a reminder </template>
       <template v-slot:body>
         <ReminderForm :fullDate="fullDate" />
       </template>
