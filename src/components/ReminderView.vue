@@ -18,14 +18,14 @@ export default {
   methods: {
     formatHours(time) {
       const { hours, minutes } = msToHours(time);
-      return `${hours}`.padStart(2, 0) + "h" + `${minutes}`.padStart(2, 0);
+      return `${hours}`.padStart(2, 0) + ":" + `${minutes}`.padStart(2, 0);
     },
   },
 };
 </script>
 
 <template>
-  <section>
+  <section :data-test-id="`reminder-view-${fullDate}`">
     <p>{{ reminderData.reminder }}</p>
     <h5>Time</h5>
     <p>

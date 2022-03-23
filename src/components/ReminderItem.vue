@@ -15,7 +15,7 @@ export default {
 </script>
 
 <template>
-  <li :class="[color, 'reminder']">
+  <li :class="[color, 'reminder']" :data-test-id="`reminder-item-${fullDate}`">
     <span class="text">{{ reminder }}</span>
     <button class="btn" @click.stop="deleteReminder">delete</button>
   </li>

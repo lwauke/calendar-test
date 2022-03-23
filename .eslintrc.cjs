@@ -15,6 +15,7 @@ module.exports = {
     "vue/setup-compiler-macros": true,
   },
   rules: {
+    quotes: ["error", "double"],
     "vue/multi-word-component-names": "off",
   },
 };

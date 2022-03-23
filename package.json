@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test": "vitest run --environment jsdom",
+    "test": "npm run test:watch -- run",
+    "test:watch": "vitest --environment jsdom",
     "preview": "vite preview --port 5050",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "prepare": "husky install"

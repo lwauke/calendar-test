@@ -16,13 +16,25 @@ describe("Calendar", () => {
 
   const findByTestId = (testId) => wrapper.find(`[data-test-id="${testId}"]`);
 
+  const clickOnDebouncedItem = (selector, wait) =>
+    new Promise((res) => {
+      setTimeout(async () => {
+        const item = await findByTestId(selector);
+        await item.trigger("click");
+        res(item);
+      }, wait);
+    });
+
   it("should add reminder", async () => {
     // vi methods are somehow quieting my logs, so I cant continue spending time trying to mock a date :/
     // const date = new Date(2022,2,10,12)
     // vi.useFakeTimers()
     // vi.setSystemTime(date)
     const now = new Date();
-    const dateToTest = `${now.getFullYear()}-${now.getMonth() + 1}-28`;
+    const month = now.getMonth() + 1;
+    const year = now.getFullYear();
+    const date = 10;
+    const dateToTest = `${year}-${month}-${date}`;
     const reminder = {
       value: "Lorem ipsum sit dolor amet",
       city: "Rio de Janeiro",
@@ -48,42 +60,35 @@ describe("Calendar", () => {
         },
       ],
     };
-    /* eslint no-undefined: "off" -- there is no way to define global here */
     global.fetch = vi.fn().mockReturnValueOnce(mockResponse(countriesMock));
 
     const btn = findByTestId(`btn-add-${dateToTest}`);
     await btn.trigger("click");
 
     await findByTestId("reminder-input").setValue(reminder.value);
-    const selectColor = findByTestId(`color-input`);
-    selectColor.setValue(reminder.color);
-    await findByTestId(`start-input`).setValue(reminder.start);
-    await findByTestId(`end-input`).setValue(reminder.end);
+    await findByTestId("color-input").setValue(reminder.color);
+    await findByTestId("start-input").setValue(reminder.start);
+    await findByTestId("end-input").setValue(reminder.end);
 
-    const countryInput = findByTestId(`country-input`);
-    await countryInput.setValue(reminder.country);
+    await findByTestId("country-input").setValue(reminder.country);
+    await clickOnDebouncedItem("country-item-brazil", 250);
+    findByTestId("city-input").setValue("rio");
+    await clickOnDebouncedItem("city-item-rio-de-janeiro", 250);
 
-    const getDebouncedItem = (selector, wait) =>
-      new Promise((res) => {
-        setTimeout(async () => {
-          const item = await findByTestId(selector);
-          await item.trigger("click");
-          res(item);
-        }, wait);
-      });
-    await getDebouncedItem("country-item-brazil", 250);
+    await findByTestId("add-reminder").trigger("click");
+    await findByTestId("close-modal").trigger("click");
 
-    const cityInput = findByTestId(`city-input`);
-    await cityInput.setValue("rio");
-    await wrapper.html();
-    await getDebouncedItem("city-item-rio-de-janeiro", 250);
+    const reminderItem = await findByTestId(`reminder-item-${dateToTest}`);
+    await reminderItem.trigger("click");
 
-    const addBtn = findByTestId(`add-reminder`);
-    const closeBtn = findByTestId(`close-modal`);
+    const reminderViewContent = await findByTestId(
+      `reminder-view-${dateToTest}`
+    ).text();
 
-    await addBtn.trigger("click");
-    await closeBtn.trigger("click");
-
-    expect(btn).toBeTruthy();
+    expect(reminderViewContent).toContain(reminder.value);
+    expect(reminderViewContent).toContain(reminder.city);
+    expect(reminderViewContent).toContain(
+      `${year}-${month}-${date} from ${reminder.start} to ${reminder.end}`
+    );
   });
 });
